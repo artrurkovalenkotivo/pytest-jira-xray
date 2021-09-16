@@ -1,14 +1,11 @@
-# pytest-jira-xray
-
-[![PyPi](https://img.shields.io/pypi/v/pytest-jira-xray.png)](https://pypi.python.org/pypi/pytest-jira-xray)
-[![Build Status](https://travis-ci.com/fundakol/pytest-jira-xray.svg?branch=master)](https://travis-ci.com/github/fundakol/pytest-jira-xray)
+# pytest-xray-sync
 
 pytest-jira-xray is a plugin for pytest that uploads test results to JIRA XRAY.
 
 ### Installation
 
 ```commandline
-pip install pytest-jira-xray
+pip install pytest-xray-sync
 ```
 
 or
@@ -30,34 +27,48 @@ def test_one():
     assert True
 ```
 
-Set system environments (Basic authentication):
-```shell
-export XRAY_API_BASE_URL=<jira URL>
-export XRAY_API_USER=<jria username>
-export XRAY_API_PASSWORD=<user password>
+Configure plugin:
+There are 3 ways to configure plugin:
+* command line arguments
+* pytest.ini
+* dedicated ini file with XRAY config only
+
+For pytest.ini or CLI for each option **xr_** prefix must be added
+```ini
+# kind of mandatory
+url = https://link to jira
+port = 9999
+username = name
+password = pass
+
+# Optional
+xr_testplan = plan id
+xr_execution_id = execution id
+
+all_fails_allowed = True/False
+interactive_push = True/False
+
+osenv_fields_to_push = 
+    OS_ENV_NAME: NAME_FOR_REPORT,
+    OS_ENV_NAME2: NAME_FOR_REPORT2
+    
+pytest_fields_to_push = 
+    pytest_var_name: NAME_FOR_REPORT,
+    pytest_var_name2: NAME_FOR_REPORT2
+
+ssl_verification = True/False
+timeout = 30
+
 ```
 
-To disable SSL certificate verification, at the client side (no case-sensitive): 
-```shell
-export XRAY_API_VERIFY_SSL=False
-```
-
-Or you can provide path to certificate file
-```shell
-export XRAY_API_VERIFY_SSL=</path/to/PEM file>
-```
 
 Upload results to new test execution:
 ```commandline
-pytest . --jira-xray
+pytest . --xray-sync
 ```
 
-Upload results to existing test execution:
+To use dedicated configfile for the plugin
 ```commandline
-pytest . --jira-xray --execution TestExecutionId
+pytest . --xray-sync --xr_config /home/test/xray_config.cfg
 ```
 
-Upload results to existing test plan (new test execution will be created):
-```commandline
-pytest . --jira-xray --testplan TestPlanId
-```
